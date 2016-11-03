@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+项目开始的思考过程和工作步骤<br />
+（0） 导入各种jar包<br />
+（1）先基于用户需要设计需求，知道我们这个网站能干什么提供哪些业务服务 -----&gt; service_interface  业务处理层的接口出来了<br />
+（2）再根据业务接口设计所需要用到的用于 service与前端交互，<br />
+以及service与DAO、数据库交互的用于封装数据的JavaBean 	-----&gt; FormBean(service-&gt;web)、DAOBean(web-&gt;service-&gt;dao)、以及多表查询用到的特殊domain<br />
+（3）然后根据DAOBean有了就可以开始搭建数据库的各种表了      -----&gt; 在数据库服务器端（MySQL等）创建数据库并在数据中对每个Bean创建一个表<br />
+（4）根据service_interface 设计DAO_interface                -----&gt; DAO层的数据库访问层接口出现了<br />
+（5）设计自定义异常类型，用于在三层（servlet层、service层、dao层）之间传递信息<br />
+例如service验证前端提交过来的表单的合法性，发现问题后将需要回显的数据以及错误<br />
+提示信息封装到FormBean中并放入到session或request域中去，然后就可以<br />
+throw new FormDateFormateException(“表单数据不合法”);的异常，由于service是由<br />
+servlet调用的，则servlet就会负责捕获service有可能抛出的异常并在catch块中控制请求转发到<br />
+原前端表单页面，前端表单页面上的EL表达式等或自动获取封装在作用域中的FormBean对象<br />
+将其中的数据回显以及错误信息显示，如果service验证通过就不会抛出异常，则servlet也就不会<br />
+执行catch块中的流转而是直接执行后面的程序逻辑  这就是自定义异常在三层之间传递信息并实现<br />
+servlet程序流转控制的典型案例。							----&gt; class xxxException extends Exceptions{}<br />
+（6）根据service接口实现service业务逻辑                      ----&gt; service_implement 业务处理层的实现<br />
+（7）创建各种Utils类，将公用逻辑封装为工具类的静态方法（例如BeanUtils封装开源框架适应当前项目、<br />
+propertiesUtils解析properties配置文件、DBCPUtils获取连接对象），方便service层使用。						---&gt; Utils<br />
+（8）创建config配置文件，其中包含DataSource、Factory、servlet所需要的properties配置文件<br />
+（9）根据DAO接口实现DAO业务逻辑（利用DBUtils工具能够更方便）                          ----&gt; DAO层实现完毕<br />
+（10）利用TLS对connection数据库连接对象进行管理，有且只有它才能直接利用DataSource（DBCP或C3P0）获取连接对象并保证<br />
+在同一线程中不管是service层还是DAO层，从它这里获取到的是同一个connnection对象。这样如果一旦需要在service层进行事务开+事务关的事务<br />
+管理工作，就可以直接使用TLS获取的connnection对象，因为这个对象与DAO中使用的是同一个connnection这样就更加方便的将事务管理逻辑同时放置<br />
+在sercice层了。<br />
+（11） 利用工厂设计模式（单例+私有化构造器） + properties配置文件来创建介于Servlet层与Service层之间的解耦单元——service工厂，以及介于service层与dao层<br />
+之间的解耦单元——Dao工厂。这些工厂通过单例设计模式保证自己在内存中的实例是唯一的，然后通过调用这些工厂类单例实例中的相关方法在配合properties配置<br />
+文件中所记载的service业务实现类类全名和dao实现类类全名，运用反射机制 Class.forName(className).newInstance() 就可以动态创建出这些层的实例对象，<br />
+供给serlvet层调用（service工厂提供的service实例）以及service层调用（dao工厂提供的dao实例），这样做servlet就不必要在自身代码中涉及service层的东西<br />
+而service层也不必要设计dao层的东西，彼此与彼此之间只是通过解耦单元（factory工厂）进行联系因此就降低了耦合性。同时properties文件的使用也为后续<br />
+不同应用场景（例如JDBC数据库驱动从TomCat变为Oracle，则配套的DAO就应该有相应调整）的快速转换提供的方便快捷的配置途径。因为DaoFactory所要返回那些<br />
+DAO实践类的实例都是靠properties提供的信息，如果Tomcat服务器所使用的DAO有一个配置文件，orcale也有一套DAO的配置文件，则更换配置文件要比修改源文件中<br />
+的代码快捷简便的多。                                                  ----&gt; Factory 解耦单元<br />
+（12） 现在 Servlet层（未实现） &lt;--ServiceFactory--&gt;Service层&lt;--DAOFactory--&gt;DAO层（DBUtils）&lt;--（TLS—&gt;DataSource）--&gt;数据库<br />
+都已经完备了，则可以开始创建Test利用JUnit对这一条线进行测试了，测试只需要测试Service层中包含业务逻辑的方法即可，<br />
+可以从ServiceFactory这一点开始，保证解耦单元的使用也万无一失。 当Test类中所有测试方法都通过后，且数据库中数据读写也正常，则说明我们的<br />
+JavaWeb工程完成了一多半了。<br />
+（13） 创建servlet利用从请求参数中截获的op参数来定向内部的逻辑分支，进行向service业务的流转。<br />
+servlet只用来控制程序流转，不涉及任何业务逻辑（业务逻辑均在service层）      ----&gt; Servlet<br />
+（14） 创建过滤器，将service中一些通用的、公用的逻辑提取出来，<br />
+例如Gzip压缩、表单验证、编码处理、防止表单重复提交等逻辑，Filter过滤器与Struts2中Interceptor拦截器作用相同。 ----&gt; Filter过滤器<br />
+（15） JSP页面设计。 工作量也很大，包括前端设计（JS/HTML/CSS/等动态Web资源） + JSTL的使用 + JSP自定义标签技术 + 自定义EL函数 + EL表达式等，<br />
+目的就是搭建一个可以自动从服务器端获取数据来构筑页面的东东。  ----&gt; jsp文档、css样式表、js脚本、fucntion自定义EL函数+taglib自定义标签+tld文件
+</body>
+</html>

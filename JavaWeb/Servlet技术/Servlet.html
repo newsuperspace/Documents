@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<h1>创建Servlet类</h1>
+<h2>第一步</h2>
+<p><img src="../Images/Servlet和Filter/servlet的创建步骤/step01.png" width="932" height="569" /></p>
+<p>第二步</p>
+<p><img src="../Images/Servlet和Filter/servlet的创建步骤/step02.png" width="556" height="594" /></p>
+<p>第三步</p>
+<p><img src="../Images/Servlet和Filter/servlet的创建步骤/step03.png" width="556" height="594" /></p>
+<p>配置Servlet————在web.xml文件中进行servlet的配置，如果在第三步中勾选了“Generate/Map web.xml file”就会自动生成如下信息</p>
+<p><img src="../Images/Servlet和Filter/Web.xml文件的写法/如何配置servlet.png" width="444" height="190" /></p>
+<p>创建出来的servlet类形式如下</p>
+<p><img src="../Images/Servlet和Filter/servlet的创建步骤/servlet类的样子.png" width="740" height="377" /></p>
+<h1>使用Servlet进行Web编程</h1>
+<p>在浏览器中根据路径即可访问到指定servlet</p>
+<p>例如 http://www.NB.com/web应用名/url-pattern中配置的虚拟路径</p>
+<p> 就会被servlet容器将这次请求交由对应的servlet处理。</p>
+<p>通过servlet容器（Web应用服务器）提交过来的两个参数request和response类完成对浏览器请求数据时所提交过来的数据的获取以及撰写响应部分的内容，这一过程叫叫做JavaWeb编程。具体的关于请求和响应的关系请参考 HTTP协议部分。</p>
+<p><strong>HttpServletRequest常用的操作</strong><br />
+（0）设置将从浏览器传递过来的二进制的实体内容数据解码的编码类型—— request.set<br />
+（1）获取请求参数——request.getParameter(&quot;HTML页面表单中子标签的name&quot;)<br />
+（2）向请求转发链域写入数据—— request.setAttribute(&quot;属性名&quot;,obj)<br />
+（3）从请求转发链域获取数据—— request.getAttribute(&quot;属性名&quot;)<br />
+（4）获取服务器端会话对象—— request.getSession()<br />
+(5) 获取Web应用对象—— request.getServletContext()<br />
+(6) 请求转发—— request.getRequestDispatcher(&quot;url&quot;).forward(request,response);<br />
+（7）其他还有很多，具体请查阅JavaEE的API文档</p>
+<p><strong>HttpServletResponse常用的操作</strong><br />
+  （1）获取字符输出流  response.getWriter().write(&quot;要输出到HTML页面上的字符串信息&quot;)<br />
+  （2）获取字节输出流	 response.getOutputStream().write();<br />
+  （3）请求重定向 	response.SendRedirect(&quot;path&quot;);<br />
+  （4）设置浏览器解码响应正文编码格式和服务器编码response缓冲流数据到HTTP协议响应部分正文的编码  response.setContentType(&quot;text/html;charset=utf-8&quot;);<br />
+  （5） 只设置服务器端编码response缓冲区流数据到响应正文的码表 response.setCharacterEncoding(&quot;utf-8&quot;)<br />
+  （6） 设置各种响应头   response.setHeader(&quot;Content-Type&quot;,&quot;text/html;charset=utf-8&quot;);   // 设置浏览器以何种方式处理此次响应，以及以什么码表解码响应正文<br />
+  response.setHeader(&quot;refresh&quot;,&quot;2;url=xxxxxx&quot;);   // 多杀秒后自动跳转<br />
+（7） 其他还有一些，具体请查阅JavaEE的API文档</p>
+</body>
+</html>

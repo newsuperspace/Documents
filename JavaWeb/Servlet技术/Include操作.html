@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<h1>什么是Include？</h1>
+<p>include我的理解就是将多个jsp或html文档包含到同一个html中的技术，通常用于制作网页框架，其功能李思雨HTML中的Frameset标签的作用。</p>
+<p>通常包含的方式分为动态包含和静态包含两种，其中绝大多数为静态包含，只有通过requst.getRequestDispatcher().include()是动态包含。</p>
+<h1>静态包含（include）</h1>
+<h3>JSP处理指令</h3>
+<p>&lt;%@ include file=&quot;/pages/head.jsp&quot; %&gt; 与page、taglib这两处理指令不同的是，include处理指令k可以出现在需要出现的位置，具体形式的示例代码如下所示，这段代码将head.jsp的页面包含进了main.jsp中使用include处理指令的地方了，由此可见include类似于起到了占位符的作用。</p>
+<p><img src="../Images/Servlet和Filter/Include/JSP处理指令实现页面与页面的包含技术.png" width="1400" height="841" /></p>
+<h3>JSP动作元素</h3>
+<h3>JSTL标签</h3>
+<h1>动态包含（include）</h1>
+<h3>request.getRequestDispatcher().include()</h3>
+</body>
+</html>

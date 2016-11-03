@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<h1>Web应用目录下的WEB-INF文件夹</h1>
+<p><br />
+  这个文件夹无法直接在外部（客户端）通过URL访问，因此这也是Web应用的一块私密之地，是安全的保障。<br />
+  想要访问WEB-INF，只能通过<br />
+  （1）web.xml配置文件注册servlet和filter，因为这两种类就是存放在WEB-INF/classes这个classpath根目录中的。配置之后<br />
+  外部就可以通过web.xml中关联的虚拟路径（不是真实客观存在的，是可以随意定义的）访问servlet<br />
+  （2） 项目开发阶段所使用的各种jar包就都放在WEB-INF/lib目录下，为了能让Web应用发布到Web服务器也能正常运行，因此这些jar包需要一同打包<br />
+  （3）在服务器端可以随意访问WEB-INF目录，因此可以通过请求转发的方式（因为请求转发的操作是在服务器内部完成的，与请求重定向和定时刷新<br />
+  是由浏览器执行的操作不一样）,引导外部可以访问到位于WEB-INF/pages中的jsp或html页面。<br />
+  （4）同上一条一样，由于WEB-INF目录对服务器内部是完全开发的，则可以利用service和servlet完成向这个文件夹中上传、下载文件的操作<br />
+  总之一句话，外部对于WEB-INF目录的访问必须是在Web应用的监督管理下进行的，自主通过url访问是办不到的。所以你可以把一些需要有安全保障的文件放在这里。</p>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<h1>什么是JSP</h1>
+<p>jsp虽然长得很像HTML但其本质实际上是servlet，为了更方便地实现HTML页面输出，而不必像以前那样通过通过response.getWriter().write(&quot;&lt;body&gt;...&lt;/body&gt;&quot;这样书写HTML代码，于是出现JSP页面。JSP的目的是能够在HTML中嵌套Java代码并且方便HTML代码的编写，于是预先为我们准备好了一个表面上html的文档，我们可以在其中即书写HTML代码也可以通过&lt;%Java代码%&gt;脚本片断的形式q嵌入JAVA代码，实际上t它在真正输出给浏览器显示之前经过servlet容器的特殊转换，将所有非HTML元素部分转变为字符串后与已经存在的HTML共同z组成真正的HTML页面，只有这样浏览器才能正常显示出来。</p>
+<p>也就是说HTML语言是为了规范页面显示的，其唯一的作用就是显示，因此HTML代码对于JSP来说与普通字符串没有区别，其真正的区别是在浏览器端，浏览器能够认识HTML代码并将其转化为其他意义的k可视元素。而JSP上的q其他所有非HTML部分（例如EL表达式、JSTL标签、自定义标签、纯文本、JSP脚本片断和表达式、JSP处理指令等）都是会将结果转变为字符串或者其他不可见的y影响形式，可见的部分会原样输出到HTML页面，这样就组成了一个完成的HTML页面。</p>
+<h1>JSP页面元素
+</h1>
+<h1>JSP页面组织为HTML页面前与服务器端的交互</h1>
+<h2>Servlet技术的交互方式</h2>
+<p>JSTL——Java标准标签库</p>
+<p><a href="EL表达式和自定义EL函数.html">EL表达式和自定义EL函数</a></p>
+<p>JSP动作元素</p>
+<p>JSP表达式</p>
+<p>JSP脚本片断</p>
+<p><a href="jsp自定义标签技术.html">JSP自定义标签技术</a></p>
+<h2>Struts2技术的新增交互方式</h2>
+<p>ognl表达式</p>
+<p>值栈66666666</p>
+</body>
+</html>

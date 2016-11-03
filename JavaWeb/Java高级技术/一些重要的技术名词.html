@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<ul>
+  <li>
+    <h1>classpath根目录
+      (类路径根目录)
+    </h1>
+  </li>
+</ul>
+<blockquote>
+  <p>classpath根目录也就是所说的类路径根目录，这个根目录在Web应用最常见到的就是/WEB-INF/classes这个就是当前web应用的classpath根目录，所有类的字节码文件编译后都保存在这个目录之下。而我们常说的形如 cn.com.obj.Tamo.Servlet.login.java 这样的类全名实际在磁盘上的保存方式是以classpath为根目录的相对路径为 cn/com/obj/Tamo/login.java之下的，因此在任意一个java源文件中出现的 相对路径或者绝对路径都是默认以classpath为根目录（基路径）的。</p>
+  <p>由于工程阶段的src目录对应web应用的classes，换言之工程阶段出现在src的东西会原封不动的拷贝到classes，因此我们可以说src是工程阶段的classpath，而在工程阶段的classpath不仅仅只有src，我们还可以通过新建 Source Folder来新建一个classpath，这个新的classpath + src中的全部东西都会被自动拷贝到classes中，也就是说我们可以把工程阶段的classpath任意划分为多个组成部分。除了这两个以外，我们在lib中导入的第三方jar包以及工程的支持框架等jar包也同样是classpath，因此只要是在这些目录中出现的东西都可以在类文件中直接引用，均视作是共处于同一个classpath根目录中。	</p>
+</blockquote>
+<ul>
+  <li>
+    <h1>相对路径与绝对路径</h1>
+  </li>
+</ul>
+<blockquote>
+  <p>绝对路径指的是以&quot;/&quot;为开始的路径，例如&quot;/WEB-INF/classes/cn/com/obj/Servlet&quot; 这种。而相对路径指的就是不以&quot;/&quot;为开头的路径。</p>
+</blockquote>
+<ul>
+  <li>
+    <h1>真实路径与虚拟路径</h1>
+    <p>真实路径指的是在本地磁盘目录中所显示的能够真正引导访问的url路径，例如我们常见的&quot;C:\NoteBook\APIs&quot;.<br />
+    而虚拟路径则指的是一种虚假路径的映射，例如正常情况下通过浏览器是无法直接访问到一个Web应用的WEB-INF文件夹中的内容的，例如我们所写的servlet，但是通过在web.xml对servlet配置一个可以访问的虚拟路径之后，对于该虚拟路径的外部访问就会本servlet容器(Web应用服务器)引导并可以访问到该虚拟路径所映射servlet。这就是虚拟路径的作用。</p>
+    <p>真实路径的用处是相对于服务器本地磁盘，也就是说在服务器内部的代码逻辑（servlet、service、dao、数据库等）所使用的，为了安全真实路径是不应该暴露给本地服务器之外的。而虚拟路径是为了让本地服务器之外能够在约束的条件下可以访问到特定的有意识暴露的部分而存在的，因此虚拟路径通常是可以根据我们自己的意志自由定义的，而真实路径是客观真实存在于服务器计算机磁盘上的因此不能随意更改（当然如果你自己从C盘手动拷贝到D盘或者其他盘符就另当别论了）</p>
+  </li>
+</ul>
+</body>
+</html>

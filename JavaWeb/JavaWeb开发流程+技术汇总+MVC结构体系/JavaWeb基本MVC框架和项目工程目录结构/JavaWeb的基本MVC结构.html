@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<h1>SUN推出的JSP开发模型</h1>
+<ol>
+  <li>技术点：Servlet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JSP(EL和标签)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JavaBean</li>
+  <li>JSP开发模型有2个：Model1和Model2</li>
+  <li>Model1：JSP+JavaBean .</li>
+</ol>
+<p><img width="353" height="213" src="JavaWeb的基本MVC结构_image002.jpg" /><br />
+  注意：此种模型只适合开发非常简单的小应用。不用</p>
+<ol>
+  <li>Model2：MVC（特别重要）</li>
+</ol>
+<p>M：Model模型&nbsp;&nbsp; JavaBean<br />
+  V：View视图&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JSP<br />
+  C：Controller 流程控制器 Servlet<br />
+  <img width="479" height="257" src="JavaWeb的基本MVC结构_image004.jpg" /><br />
+  <img width="553" height="312" src="JavaWeb的基本MVC结构_image006.jpg" /></p>
+<p>开发顺序： </p>
+<ol>
+  <li>JavaBean和数据库表的构建（关键）：模型。领域 </li>
+  <li>业务需求对数据库的CRUD操作（关键）：Service接口 </li>
+  <li>DAO或者表现层。依据Service（业务需求） </li>
+</ol>
+<p>分包存放： <br />
+  com.itheima.项目名称.模块名称.domain:  存放JavaBean<br />
+  com.itheima.项目名称.模块名称.service:  存放业务接口 <br />
+  com.itheima.项目名称.模块名称.service.impl:存放业务接口实现 <br />
+  com.itheima.项目名称.模块名称.dao:存放DAO接口 <br />
+  com.itheima.项目名称.模块名称.dao.impl:存放DAO实现 </p>
+<p>----------------------------------------------------<br />
+  com.itheima.项目名称.模块名称.web.controller:存放控制器Servlet<br />
+  com.itheima.项目名称.模块名称.web.bean:表现层用到的一些临时bean<br />
+  JSP:WEB-INF/pages 防止用户直接访问JSP（不是必须的） </p>
+<p>com.itheima.项目名称.模块名称.util:存放一些工具 <br />
+  com.itheima.项目名称.模块名称.test:存放单元测试 </p>
+<p>&nbsp;</p>
+<h1>二、实际案例：用户的注册和登录（做出来前面的知识OK）</h1>
+<p>数据库：采用XML。JSP中不能有一行Java脚本或表达式.MVC+三层架构</p>
+<ol>
+  <li>根据技术要求，搭建开发环境</li>
+</ol>
+<p>拷贝jar包：<br />
+  DOM4J：<br />
+  dom4j.jar<br />
+  jaxen.jar(xpath支持)<br />
+  JUNIT4：<br />
+  junit.jar<br />
+  JSTL:<br />
+  jstl.jar<br />
+  standard.jar<br />
+  Beanutil:<br />
+  commons-beanutil.jar<br />
+  commons-logging.jar</p>
+<ol>
+  <li>建立类所在的包：也可以边写边建</li>
+  <li>分析需求：要做什么？</li>
+</ol>
+<p><img width="554" height="554" src="JavaWeb的基本MVC结构_image008.jpg" /></p>
+<ol>
+  <li>具体编码：</li>
+</ol>
+<p>第一步<br />
+  JavaBean：<br />
+  <img width="442" height="104" src="JavaWeb的基本MVC结构_image010.jpg" /><br />
+  XML：<br />
+  第二步：<br />
+  Service接口：<br />
+  <img width="553" height="321" src="JavaWeb的基本MVC结构_image012.jpg" /></p>
+<p>第三步：<br />
+  <img width="473" height="403" src="JavaWeb的基本MVC结构_image014.jpg" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

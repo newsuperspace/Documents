@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<h1>JspWriter和PrintWriter的区别</h1>
+<p>在JSP页面上我们可以通过jsp脚本片断或者jsp表达式来直接调用jsp八个隐含对象中的pageContext，这个对象的类型就是PageContext类型。</p>
+<p>通过pageContext.getOut() 就可以获取JspWriter类型的字符输出流对象，这与首先通过 pageContext..getResponse()获取到HttpServletResponse类型的response对象后在进一步通过response.getWriter()获取到的PrintWriter类型的字符输出流是不同的。JspWriter说白了只是PrintWriter的一个流缓冲，JSP页面上的字符输出通常应该首先输出到JspWriterl流上，然后再统一地一次性的输出到PrintWriter上。因此在通过java代码动态编写JSP页面上的JSP模版元素（也就是HTML）的时候虽然我们可以通过pageCoontext直接获取response的PrintWriter流，但不要这么做，因为这样做你会先于其他JSP上的元素输出到HTML页面上，正确的做法是指将字符流写入到JspWriter上，然后让JSP在组织HTML页面的时候自己统一传入到PrintWriter上去。</p>
+<h1>PrintWriter和ServletOutputStream的区别</h1>
+<p>这两个都是通过ServletResponse类型对象（如果我们当前写的是关于Http协议的servlet则就是HttpServletResponse类型对象）中获取的，用于将需要传输给浏览器的数据写入到这两个输出流中，然后编码为HTTP协议的实体内容部分，再通过网络传输给浏览器，浏览器在进行解码重新获取信息正文。而这两个流的区别在于PrintWriter是用来输出字符流的而ServletOutputStream是用来输出字节流数据的。而事实上本质来说printWriter的字符数据也会被编码然后统一传输到ServletOutputStream中去。这也就是为什么我们常说字符流能干的事儿字节流也能干，但反之不行。 同时这也就是为啥在一次请求响应中我们只能同一时间在两个流类型中二选一，如果选在printWriter就不能再选择使用outputstream，反之也是如此。就因为如果你先选择outputStream就会将printWriter对接到outputstream的过程去除掉使得PrintWriter失去作用（因为已经忽略了与outputstream的对接因此即便你将数据写入到printwriter中也不会最终导入到outputstream中去而这部分数据也就丢失了）</p>
+</body>
+</html>

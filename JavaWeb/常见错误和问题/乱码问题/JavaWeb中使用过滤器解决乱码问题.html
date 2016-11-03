@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p><strong>下面就是使用过滤器一次性解决所有编码问题的示范代码
+</strong></p>
+<p>public class CharacterEncodingFilter implements Filter {</p>
+<p> @Override<br />
+  public void destroy() {}</p>
+<p> @Override<br />
+  public void doFilter(ServletRequest req, ServletResponse resp,<br />
+  FilterChain chain) throws IOException, ServletException {</p>
+<p> //  =============================过滤器的标准步骤============================<br />
+  HttpServletRequest   request = null;<br />
+  HttpServletResponse  response = null;<br />
+  try{<br />
+  request = (HttpServletRequest)req;<br />
+  response = (HttpServletResponse)resp;<br />
+  }catch(Exception e)<br />
+  {<br />
+  e.printStackTrace();<br />
+  throw new RuntimeException(&quot;CharacterEncodingFilter-&gt;doFilter()-&gt;非HTTP协议&quot;);<br />
+  }<br />
+  <br />
+  <br />
+  // ==============================下面开始正经事儿============================<br />
+  <br />
+  // 解决POST请求方式的乱码问题<br />
+  request.setCharacterEncoding(&quot;utf-8&quot;);<br />
+  //		response.setCharacterEncoding(&quot;utf-8&quot;);<br />
+  /**<br />
+  * 这句话非常重要，<br />
+  * 1、它告知浏览器从服务器传递过来的响应数据的MIME类型为HTML文本<br />
+  * 这样浏览器就不会用下载的方式处理这段服务器响应回来的数据了。如果不指定response的MIME类型<br />
+  * 为text/html则浏览器默认会以下载的方式处理服务器的响应，而不是一HTML页面的形式处理，这点非常重要！<br />
+  * 2、它告知服务器端以何种字符集（UTF-8）编码响应部分的字符，<br />
+  * 也就是servlet通过response.getWriter().write()或response.getOutputStream().write()<br />
+  * 写入到response对象的缓冲区的数据，这些数据会被编码为二进制（本身就是二进制的就不用编了）<br />
+  * 然后组成作为真正HTTP协议的响应部分的实体内容，而这个编码过程中究竟是用哪种码表<br />
+  * 就是通过这里charset=utf-8或者response.setCharacterEncoding('utf-8')来指定的。<br />
+  * 3、它还告知了浏览器以何种字符集解码从服务器端传递来HTTP协议的实体内容（二进制）数据<br />
+  * 4、因此这里只要谢了response.setContextType(&quot;text/html;charset=utf-8&quot;);了就不用再写response.setCharacterEncoding(&quot;utf-8&quot;);了<br />
+  */<br />
+  response.setContentType(&quot;text/html;charset=utf-8&quot;);   // 千万不要忽视MIME类型部分，不然浏览器就会尝试下载而不是尝试解析HTML文本页面,我已经吃过不少次这个亏了<br />
+  <br />
+  // 解决GET请求方式的乱码问题———需要借助包装设计模式所实现的适配器对request对象进行包装，从而更改其getParameter()的行为<br />
+  MyHttpServletRequest  myRequest =  new  MyHttpServletRequest(request);   // 目前新版本的Tomcat可能已经不需要这么做了，使用request。setCharacterEncoding就能同时解决post和get乱码问题<br />
+  <br />
+  // 最后一切准备就绪，放行把<br />
+  chain.doFilter(myRequest, response);<br />
+  }</p>
+<p> /**<br />
+  * 定义一个私有的内部类，继承自Request的包装适配器类型——Wrapper<br />
+  * 然后更改我们所需要的方法的行为<br />
+  * @author Administrator<br />
+  *<br />
+  *适配器设计模式 = 包装设计模式 + 继承覆盖<br />
+  */<br />
+  private  class MyHttpServletRequest  extends HttpServletRequestWrapper<br />
+  {<br />
+  /**<br />
+  * 这个构造器是包装适配器的核心，它将需要更改成员方法行为的被包装对象注入到以修饰设计模式实现的包装适配器中去<br />
+  * 这个适配器类型又是我们当前类的父类，在这个适配器类型与被包装类型实现了完全相同的接口，并在每个相同方法内部<br />
+  * 原封不动地原样调用被包装的对象的同名方法。而我们在自己的类中只需要覆盖(override)我们需要更改行为的方法即可，至于其他<br />
+  * 不需要更改行为的方法就会调用父类内部的，而父类又会自动调用被包装类的。<br />
+  * @param request<br />
+  */<br />
+  public MyHttpServletRequest(HttpServletRequest request) {<br />
+  super(request);<br />
+  }</p>
+<p> /**<br />
+  * 我们想要修改的方法是获取请求参数的方法，因为 request.setCharacterEncoding()的方式只对POST提交有效<br />
+  * 而对于请求方式为GET的话，由于请求参数都是以？name=AAA&amp; 这样的形式追加到hurl末尾过来的而不是在请求正文中<br />
+  * 因此通过设置编码的方式没法解决乱码问题（可实际上通过实践操作，现在新版本的TomCat好像只需要通过request.setCharacterEncoding()设置一次<br />
+  * 就能同时解决POST和GET两种提交方式乱码了，所以这种适配器的方式可能不再需要了）<br />
+  */<br />
+  @Override<br />
+  public String getParameter(String name) {<br />
+  // 先调用原始HttpServletRequest对象的getParameter方法获取有乱码的请求参数的值<br />
+  //（因为所有二进制数据来到服务器端后默认都是先以ASCII码表进行解码，所以如果客户端是用U8编码的而服务器却用ASCII解码自然就会产生乱码）<br />
+  String value = super.getParameter(name);<br />
+  <br />
+  if(null==value)<br />
+  {<br />
+  return null;  // 检测字符串是否为null，为null说明没有叫这个名字的请求参数，则可以直接返回null，表示找不到这个名字的请求参数<br />
+  }<br />
+  <br />
+  /**<br />
+  * 接下来就是很经典地处理字符串乱码的方式<br />
+  * 因为我们知道现在value是服务器缺省用ASCII码表解码所生成的字符串，所以为了获取从浏览器穿过来的原始二进制数据<br />
+  * 我们就需要使用String类型的getBytes方法指定编码字符集为ISO8859-1后对字符串进行编码，得到字符数组，也就是字节缓冲<br />
+  * 然后新建一个String类型，使用一个包含两个参数的构造器，分别是 字节数组、解码码表、 <br />
+  */<br />
+  try {<br />
+  byte[]  buffer =  value.getBytes(&quot;iso8859-1&quot;);<br />
+  // 这样新建出来的字符处就完成了从ASCII码转变为UTF-8编码的过程了<br />
+  value =  new String(buffer,propertiesUtils.getCharsetConfig().getProperty(&quot;page&quot;));<br />
+  } catch (UnsupportedEncodingException e) {<br />
+  e.printStackTrace();<br />
+  throw  new  RuntimeException(&quot;CharacterEncodingFilter-&gt;MyHttpServletRequest-&gt;getParameter()-&gt;编码类型异常&quot;);<br />
+  }<br />
+  return value;<br />
+  }<br />
+  }<br />
+  <br />
+  @Override<br />
+  public void init(FilterConfig config) throws ServletException {}<br />
+  }<br />
+</p>
+</body>
+</html>
